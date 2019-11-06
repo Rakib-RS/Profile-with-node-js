@@ -5,9 +5,10 @@ var ObjectID = mongodb.ObjectID;
 const COLLECTION = "contacts";
 var app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 var db;
 const url = "mongodb://localhost:27017/test"
-mongodb.MongoClient.connect(process.env.MONGODB_URI ||url,function(err,client){
+mongodb.MongoClient.connect(process.env.MONGODB_URI ||url,{useNewUrlParser:true,useUnifiedTopology:true},function(err,client){
     if (err) {
         console.log(err);
         process.exit(1);
@@ -35,9 +36,33 @@ function handleError(res, reason, message, code) {
    */
   
   app.get("/api/contacts", function(req, res) {
+    db.collection(COLLECTION).find({}).toArray(function(err,docs){
+        if (err) {
+            handleError(res,err.message,"Failed to get contacts");
+        }
+        else{
+            res.status(200).json(docs);
+        }
+    })
   });
   
   app.post("/api/contacts", function(req, res) {
+      console.log(req.body);
+      
+    var newContact = req.body;
+    newContact.createDate = new Date();
+  
+    if (!req.body.name) {
+      handleError(res, "Invalid user input", "Must provide a name.", 400);
+    } else {
+      db.collection(COLLECTION).insertOne(newContact, function(err, doc) {
+        if (err) {
+          handleError(res, err.message, "Failed to create new contact.");
+        } else {
+          res.status(201).json(doc.ops[0]);
+        }
+      });
+    }
   });
   
   /*  "/api/contacts/:id"
