@@ -6,6 +6,9 @@ const COLLECTION = "contacts";
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+var distDir = __dirname + "/dist/";
+app.use(express.static(distDir));
+
 var db;
 //const url = "mongodb://localhost:27017/test";
 const url = "mongodb+srv://rakib:rakib@cluster0-0bgt6.mongodb.net/Profile?retryWrites=true&w=majority";
