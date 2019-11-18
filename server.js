@@ -7,7 +7,8 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 var db;
-const url = "mongodb://localhost:27017/test"
+//const url = "mongodb://localhost:27017/test";
+const url = "mongodb+srv://rakib:rakib@cluster0-0bgt6.mongodb.net/Profile?retryWrites=true&w=majority";
 mongodb.MongoClient.connect(process.env.MONGODB_URI ||url,{useNewUrlParser:true,useUnifiedTopology:true},function(err,client){
     if (err) {
         console.log(err);
